@@ -12,7 +12,7 @@ export const scenes = {
             description: "This is a comfortable bed.",
             link: ""
           },
-          targetScene: null  // No transition for this hotspot
+          targetScene: null
         },
         {
           radius: 49,
@@ -25,7 +25,7 @@ export const scenes = {
             link: ""
           },
           targetScene: "living" 
-        }
+        },
       ]
     },
     living: {
@@ -44,7 +44,7 @@ export const scenes = {
           targetScene: "bedroom"
         }
       ]
-    }
+    },
   };
   
   export const AppartmentProps = {
@@ -169,22 +169,22 @@ export const scenes = {
       {
         "name": "Bedroom",
         "position": { "top": "45%", "left": "60%" },
-        "link": "/panorama"
+        "link": "/panorama/bedroom"
       },
       {
         "name": "Kitchen",
         "position": { "top": "60%", "left": "39%" },
-        "link": "/panorama"
+        "link": "/panorama/living"
       },
       {
         "name": "Living Room",
         "position": { "top": "50%", "left": "40%" },
-        "link": "/panorama"
+        "link": "/panorama/living"
       },
       {
         "name": "Dining Room",
         "position": { "top": "50%", "left": "50%" },
-        "link": "/panorama"
+        "link": "/panorama/living"
       }
     ]
   }

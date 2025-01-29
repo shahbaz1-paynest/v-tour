@@ -1,11 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import * as THREE from "three";
 
-const PanoramaViewer = ({ initialScene, scenes, brightness = 0, contrast = 1 }) => {
-  const [currentScene, setCurrentScene] = useState(initialScene);
+const PanoramaViewer = ({ scenes, brightness = 0, contrast = 1 }) => {
+  const { sceneId } = useParams();
+  const navigate = useNavigate();
+  
+  const [currentScene, setCurrentScene] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const controlsRef = useRef();
@@ -14,6 +17,23 @@ const PanoramaViewer = ({ initialScene, scenes, brightness = 0, contrast = 1 }) 
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [tooltipContent, setTooltipContent] = useState({ title: "", description: "", link: "" });
   const [cursorStyle, setCursorStyle] = useState('default');
+
+  useEffect(() => {
+    if (sceneId && scenes[sceneId]) {
+      setCurrentScene(sceneId);
+    } else {
+      const firstScene = Object.keys(scenes)[0];
+      navigate(`/panorama/${firstScene}`);
+    }
+  }, [sceneId, scenes, navigate]);
+
+  const handleSceneChange = (newScene) => {
+    if (scenes[newScene]) {
+      navigate(`/panorama/${newScene}`);
+    }
+  };
+
+  if (!currentScene) return null;
 
   return (
     <div style={{ cursor: cursorStyle }}>
@@ -24,7 +44,7 @@ const PanoramaViewer = ({ initialScene, scenes, brightness = 0, contrast = 1 }) 
         <PanoramaScene 
           scenes={scenes}
           currentScene={currentScene}
-          setCurrentScene={setCurrentScene}
+          setCurrentScene={handleSceneChange}
           isTransitioning={isTransitioning}
           setIsTransitioning={setIsTransitioning}
           isZoomed={isZoomed} 
@@ -126,18 +146,14 @@ const PanoramaScene = ({
         vec4 currentColor = texture2D(baseTexture, vUv);
         vec4 nextColor = texture2D(nextTexture, vUv);
         
-        // Smooth transition using smoothstep
         float smoothProgress = smoothstep(0.0, 1.0, progress);
         vec4 color = mix(currentColor, nextColor, smoothProgress);
         
-        // Apply brightness
         color.rgb += brightness;
         
-        // Apply contrast while preserving alpha
         vec3 contrastedColor = (color.rgb - 0.5) * contrast + 0.5;
         color = vec4(contrastedColor, color.a);
         
-        // Ensure color values are within valid range
         color = clamp(color, 0.0, 1.0);
         
         gl_FragColor = color;

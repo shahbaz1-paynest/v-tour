@@ -41,16 +41,15 @@ const router = createBrowserRouter([
     </Suspense>
     ),  },
   {
-    path: "/panorama",
-    element: (
+    path: "/panorama/:sceneId",
+        element: (
       <Suspense fallback={<Loader />}>
-        <PanoramaViewer
-          initialScene="bedroom"
-          scenes={scenes}
-          brightness={-0.1}
-          contrast={1}    
-        />
-      </Suspense>
+      <PanoramaViewer
+        scenes={scenes}
+        brightness={-0.1}
+        contrast={1}    
+      />
+    </Suspense>
     ),
   },
 
