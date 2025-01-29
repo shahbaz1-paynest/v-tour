@@ -11,7 +11,7 @@ const PanoramaViewer = lazy(() => import('./components/VTour'));
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "building/:buildingName",
     element: (
       <Suspense fallback={<Loader />}>
       <Building {...BuildingProps} />
@@ -19,14 +19,14 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/floor",
+    path: "/floor/:floorName",
     element: (
       <Suspense fallback={<Loader />}>
       <Floor {...FloorProps} />
     </Suspense>
     ),  },
   {
-    path: "/appartment",
+    path: "/appartment/:apartmentName",
     element: (
       <Suspense fallback={<Loader />}>
       <Appartment {...AppartmentProps} />
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/room",
+    path: "/room/:roomName",
     element: (
       <Suspense fallback={<Loader />}>
       <Room {...RoomProps} />

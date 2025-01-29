@@ -1,13 +1,21 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import '../App.css';
 
-const Room = ({ image, alt, rooms }) => {
+const Room = (props) => {
+  const { roomName } = useParams();
+  
+  if (!props || !roomName || !props[roomName]) {
+    return <div>Room not found</div>;
+  }
+
+  const room = props[roomName];
+
   return (
     <div className="image-map-container">
-      <img src={image} alt={alt} className="image-map" />
-      {rooms.map((room, index) => (
-        <Link 
+      <img src={room.image} alt={room.alt} className="image-map" />
+      {room.rooms.map((room, index) => (
+        <Link
           key={index}
           to={room.link}
           className="room-rectangle"
