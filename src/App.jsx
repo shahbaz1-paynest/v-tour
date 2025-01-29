@@ -1,14 +1,13 @@
 import React, { Suspense, lazy } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Loader from './components/Loader';
+import { scenes, AppartmentProps, FloorProps, RoomProps, BuildingProps } from './props';
 
 const Building = lazy(() => import('./components/Building'));
 const Floor = lazy(() => import('./components/Floor'));
 const Appartment = lazy(() => import('./components/Appartment'));
 const Room = lazy(() => import('./components/Room'));
 const PanoramaViewer = lazy(() => import('./components/VTour'));
-const RoomTour = lazy(() => import('./components/RoomTour'));
-
 
 const withLoader = (Component) => (
   <Suspense fallback={<Loader />}>
@@ -19,28 +18,48 @@ const withLoader = (Component) => (
 const router = createBrowserRouter([
   {
     path: "/",
-    element: withLoader(Building),
+    element: (
+      <Suspense fallback={<Loader />}>
+      <Building {...BuildingProps} />
+    </Suspense>
+    ),
   },
   {
     path: "/floor",
-    element: withLoader(Floor),
-  },
+    element: (
+      <Suspense fallback={<Loader />}>
+      <Floor {...FloorProps} />
+    </Suspense>
+    ),  },
   {
     path: "/appartment",
-    element: withLoader(Appartment),
+    element: (
+      <Suspense fallback={<Loader />}>
+      <Appartment {...AppartmentProps} />
+    </Suspense>
+    ),
   },
   {
     path: "/room",
-    element: withLoader(Room),
-  },
+    element: (
+      <Suspense fallback={<Loader />}>
+      <Room {...RoomProps} />
+    </Suspense>
+    ),  },
   {
     path: "/panorama",
-    element: withLoader(PanoramaViewer),
+    element: (
+      <Suspense fallback={<Loader />}>
+        <PanoramaViewer
+          initialScene="bedroom"
+          scenes={scenes}
+          brightness={-0.1}
+          contrast={1}    
+        />
+      </Suspense>
+    ),
   },
-  {
-    path: "/living-room",
-    element: withLoader(RoomTour),
-  },
+
 ]);
 
 const App = () => {
