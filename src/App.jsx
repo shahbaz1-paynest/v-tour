@@ -9,12 +9,6 @@ const Appartment = lazy(() => import('./components/Appartment'));
 const Room = lazy(() => import('./components/Room'));
 const PanoramaViewer = lazy(() => import('./components/VTour'));
 
-const withLoader = (Component) => (
-  <Suspense fallback={<Loader />}>
-    <Component />
-  </Suspense>
-);
-
 const router = createBrowserRouter([
   {
     path: "/",

@@ -91,7 +91,7 @@ const PanoramaScene = ({
 }) => {
   const { camera, scene, size } = useThree();
   const transitionProgress = useRef(0);
-  const transitionSpeed = useRef(0.015); // Slower transition speed
+  const transitionSpeed = useRef(0.015); 
   const zoomTarget = useRef(new THREE.Vector3());
   const initialCameraPosition = useRef();
   const nextTextureRef = useRef(null);
@@ -99,7 +99,6 @@ const PanoramaScene = ({
   const currentTexture = useTexture(scenes[currentScene].image);
   currentTexture.encoding = THREE.sRGBEncoding;
   
-  // Enhanced shader with smooth transitions
   const customShader = {
     uniforms: {
       baseTexture: { value: currentTexture },
@@ -154,7 +153,6 @@ const PanoramaScene = ({
     })
   );
 
-  // Update shader uniforms when props change
   useEffect(() => {
     if (material.current) {
       material.current.uniforms.brightness.value = brightness;
@@ -189,12 +187,10 @@ const PanoramaScene = ({
       setIsTransitioning(true);
       transitionProgress.current = 0;
       
-      // Preload next texture
       const nextTexture = await preloadTexture(scenes[config.targetScene].image);
       nextTextureRef.current = nextTexture;
       material.current.uniforms.nextTexture.value = nextTexture;
       
-      // Smooth easing function
       const easeInOutCubic = (t) => {
         return t < 0.5
           ? 4 * t * t * t
@@ -243,11 +239,9 @@ const PanoramaScene = ({
     const intersects = raycaster.intersectObjects(scene.children);
 
     if (intersects.length > 0) {
-      // Store the current quaternion for rotation interpolation
       const startQuaternion = camera.quaternion.clone();
       
       if (!isZoomed) {
-        // Zooming in
         zoomTarget.current.copy(intersects[0].point);
         const direction = zoomTarget.current.clone().sub(camera.position).normalize();
         const distance = camera.position.distanceTo(zoomTarget.current);
@@ -257,7 +251,6 @@ const PanoramaScene = ({
         const startTime = Date.now();
         const duration = 1000;
 
-        // Calculate target quaternion for smooth rotation
         const targetQuaternion = new THREE.Quaternion();
         const targetRotation = new THREE.Vector3().subVectors(zoomTarget.current, newPosition).normalize();
         const up = new THREE.Vector3(0, 1, 0);
@@ -269,10 +262,8 @@ const PanoramaScene = ({
           const progress = elapsed / duration;
           const easedProgress = easeInOutQuad(progress);
 
-          // Interpolate position
           camera.position.lerpVectors(startPos, newPosition, easedProgress);
           
-          // Interpolate rotation
           camera.quaternion.slerpQuaternions(startQuaternion, targetQuaternion, easedProgress);
 
           if (controlsRef.current) {
@@ -288,15 +279,13 @@ const PanoramaScene = ({
         animateCamera();
         setIsZoomed(true);
       } else {
-        // Zooming out
         const startPos = camera.position.clone();
         const startTarget = controlsRef.current ? controlsRef.current.target.clone() : new THREE.Vector3();
         const startTime = Date.now();
         const duration = 1000;
 
-        // Calculate target quaternion for reset position
         const targetQuaternion = new THREE.Quaternion();
-        const targetRotation = new THREE.Vector3(0, 0, 1); // Reset to initial view direction
+        const targetRotation = new THREE.Vector3(0, 0, 1);
         const up = new THREE.Vector3(0, 1, 0);
         const matrix = new THREE.Matrix4().lookAt(initialCameraPosition.current, new THREE.Vector3(0, 0, 0), up);
         targetQuaternion.setFromRotationMatrix(matrix);
@@ -306,14 +295,11 @@ const PanoramaScene = ({
           const progress = elapsed / duration;
           const easedProgress = easeInOutQuad(progress);
 
-          // Interpolate position
           camera.position.lerpVectors(startPos, initialCameraPosition.current, easedProgress);
           
-          // Interpolate rotation
           camera.quaternion.slerpQuaternions(startQuaternion, targetQuaternion, easedProgress);
 
           if (controlsRef.current) {
-            // Smoothly reset orbit controls target
             controlsRef.current.target.lerpVectors(
               startTarget,
               new THREE.Vector3(0, 0, 0),
@@ -325,7 +311,6 @@ const PanoramaScene = ({
           if (progress < 1) {
             requestAnimationFrame(animateReset);
           } else {
-            // Ensure final position and rotation are exact
             camera.position.copy(initialCameraPosition.current);
             camera.quaternion.copy(targetQuaternion);
             if (controlsRef.current) {
@@ -341,7 +326,6 @@ const PanoramaScene = ({
     }
   };
 
-  // Smooth easing function
   const easeInOutQuad = (t) => {
     return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   };
