@@ -1,31 +1,55 @@
-const VerdesPineMap = ({ style }) => {
-    return (
-        <div 
-        className="highlightt"
-        style={{
-          ...style,
-          position: 'absolute',
-          width: '200px',  // ← Increase this
-          height: '200px', // ← Increase this
-          overflow: 'visible'
-        }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1920 1920"
-          width="400"
-          height="400"
-          style={{
-            transform: 'translate(-50%, -50%) scale(2)',
-            pointerEvents: 'none'
-          }}
-        >
-          <path
-            d="M1375.87,1235.54l-3.36,61.4s-298.93-23.7-315.78-23.96c-16.85-.25-162.38-5.62-181.79-6.12-19.4-.51-42.89.76-50.55,2.8-7.66,2.05-73.03,31.66-85.03,37.02-12,5.37-45.7,22.48-71.48,21.96-25.79-.51-45.96-13.53-84.26-36l-18.56-11.66,13.6-5.3-.18-10.03c7.43,4.69,18.24,6.33,26.88,6.48,9.7.17,23.66-3.07,44.6-11.58,20.93-8.51,154.59-66.25,166.34-71.02,3.32-1.35,7.04-2.72,11.06-4,.88-.28,1.77-.55,2.67-.81,2.92-.86,5.98-1.66,9.13-2.34v29.45c0,3.74,3.69,10.3,18.33,10.77,6.98.22,152.51,4.6,163.24,4.6s143.18,10.54,152.72,10.71c9.53.17,11.74-2.38,16.51-2.21,4.76.17,34.85.35,42.51.86,7.66.51,15.14,1.36,19.4,2.72,4.26,1.36,17.96,4.17,25.28,4.17s37.45-2.56,44.42-2.56,9.2-4.98,9.2-7.53l45.1,2.18Z"
-          />
-        </svg>
-      </div>
-    );
-  };
+import React, { useState, useRef } from 'react';
+import { Canvas, useLoader, useThree } from '@react-three/fiber';
+import { TextureLoader } from 'three';
+import { OrbitControls } from '@react-three/drei';
+
+const Panorama = ({ imageUrl, onPointerPlace }) => {
+  const texture = useLoader(TextureLoader, imageUrl);
+  const { camera } = useThree();
   
-  export default VerdesPineMap;
+  const handleClick = (event) => {
+    event.stopPropagation();
+    const { point } = event;
+    onPointerPlace(point);
+  };
+
+  return (
+    <mesh scale={[-1, 1, 1]} onClick={handleClick}>
+      <sphereGeometry args={[500, 60, 40]} />
+      <meshBasicMaterial map={texture} side={2} />
+    </mesh>
+  );
+};
+
+const Pointer = ({ position }) => (
+  <mesh position={position}>
+    <sphereGeometry args={[2, 32, 32]} />
+    <meshBasicMaterial color="red" />
+  </mesh>
+);
+
+const PanoramaViewerx = ({ imageUrl = "pan.webp" }) => {
+  const [pointers, setPointers] = useState([]);
+  
+  const handlePointerPlace = (point) => {
+    setPointers([...pointers, point]);
+  };
+
+  return (
+    <div style={{ width: '100%', height: '100vh' }}>
+      <Canvas camera={{ position: [0, 0, 0.1], fov: 75 }}>
+        <OrbitControls 
+          enableZoom={false}
+          enablePan={false}
+          rotateSpeed={-0.5}
+        />
+        <Panorama imageUrl={imageUrl} onPointerPlace={handlePointerPlace} />
+        {pointers.map((position, index) => (
+          <Pointer key={index} position={position} />
+        ))}
+      </Canvas>
+    </div>
+  );
+};
+
+export default PanoramaViewerx;

@@ -2,13 +2,13 @@ import React, { Suspense, lazy } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Loader from './components/Loader';
 import { scenes, AppartmentProps, FloorProps, RoomProps, BuildingProps } from './props';
+import PanoramaViewerx from './components/svg';
 
 const Building = lazy(() => import('./components/Building'));
 const Floor = lazy(() => import('./components/Floor'));
 const Appartment = lazy(() => import('./components/Appartment'));
 const Room = lazy(() => import('./components/Room'));
 const PanoramaViewer = lazy(() => import('./components/VTour'));
-
 const router = createBrowserRouter([
   {
     path: "building/:buildingName",
@@ -40,15 +40,19 @@ const router = createBrowserRouter([
       <Room {...RoomProps} />
     </Suspense>
     ),  },
+
+    {
+      path: "/roomx",
+      element: (
+        <Suspense fallback={<Loader />}>
+        <PanoramaViewerx {...RoomProps} />
+      </Suspense>
+      ),  },
   {
     path: "/panorama/:sceneId",
         element: (
       <Suspense fallback={<Loader />}>
-      <PanoramaViewer
-        scenes={scenes}
-        brightness={-0.1}
-        contrast={1}    
-      />
+<PanoramaViewer scenes={scenes} initialScene="scene1" />
     </Suspense>
     ),
   },

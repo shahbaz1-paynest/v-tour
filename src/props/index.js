@@ -1,51 +1,47 @@
+import * as THREE from "three";
+
 export const scenes = {
-    bedroom: {
-      image: "/panaroma.webp",
-      circles: [
-        {
-          radius: 49,
-          theta: -Math.PI / 2,
-          phi: Math.PI / 1.8,
-          showTooltip: true,
-          tooltipContent: {
-            title: "Bed",
-            description: "This is a comfortable bed.",
-            link: ""
-          },
-          targetScene: null
+  bedroom: {
+    image: "/panaroma.webp",
+    pointers: [
+      {
+        position: new THREE.Vector3(35, 0, 35),
+        showTooltip: true,
+        tooltipContent: {
+          title: "Bed",
+          description: "This is a comfortable bed.",
+          link: ""
         },
-        {
-          radius: 49,
-          theta: -Math.PI / 4,
-          phi: Math.PI / 2,
-          showTooltip: true,
-          tooltipContent: {
-            title: "To Living Room",
-            description: "Click to enter living room",
-            link: ""
-          },
-          targetScene: "living" 
+        targetScene: null
+      },
+      {
+        position: new THREE.Vector3(-35, 0, 35),
+        showTooltip: true,
+        tooltipContent: {
+          title: "To Living Room",
+          description: "Click to enter living room",
+          link: ""
         },
-      ]
-    },
-    living: {
-      image: "/pan.webp",
-      circles: [
-        {
-          radius: 49,
-          theta: Math.PI / 2,
-          phi: Math.PI / 2,
-          showTooltip: true,
-          tooltipContent: {
-            title: "To Bedroom",
-            description: "Click to return to bedroom",
-            link: ""
-          },
-          targetScene: "bedroom"
-        }
-      ]
-    },
-  };
+        targetScene: "living"
+      }
+    ]
+  },
+  living: {
+    image: "/pan.webp",
+    pointers: [
+      {
+        position: new THREE.Vector3(0, 0, 49),
+        showTooltip: true,
+        tooltipContent: {
+          title: "To Bedroom",
+          description: "Click to return to bedroom",
+          link: ""
+        },
+        targetScene: "bedroom"
+      }
+    ]
+  }
+};
   
   export const AppartmentProps = {
     apt1: {
